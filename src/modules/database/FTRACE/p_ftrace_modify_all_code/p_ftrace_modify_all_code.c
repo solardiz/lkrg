@@ -59,6 +59,8 @@ static notrace int p_ftrace_modify_all_code_entry(struct kretprobe_instance *p_r
 
    spin_lock(&p_db_lock);
    p_ftrace_tmp_mod = p_ftrace_tmp_text = 0;
+p_print_log(P_LOG_ISSUE, "[FTRACE] command %d", p_command);
+return 0;
    /* text_mutex lock should do the sync work here... */
    bitmap_zero(p_db.p_jump_label.p_mod_mask, p_db.p_module_list_nr);
 
@@ -93,10 +95,12 @@ static notrace int p_ftrace_modify_all_code_entry(struct kretprobe_instance *p_r
           * FTRACE might generate dynamic trampoline which is not part of .text section.
           * This is not abnormal situation anymore.
           */
-         p_print_log(P_LOG_WATCH,
+         p_print_log(P_LOG_ISSUE,
                      "[FTRACE] Not a .text section! [0x%lx]",p_rec->ip);
       }
    }
+
+   p_print_log(P_LOG_ISSUE, "[FTRACE] text %ld, mod %d", p_ftrace_tmp_text, p_ftrace_tmp_mod);
 
    return 0;
 }
@@ -126,7 +130,7 @@ static notrace int p_ftrace_modify_all_code_ret(struct kretprobe_instance *ri, s
       p_db.kernel_stext_copy[p_db.kernel_stext.p_size] = 0;
 #endif
 
-      p_print_log(P_LOG_WATCH,
+      p_print_log(P_LOG_ISSUE,
              "[FTRACE] Updating kernel core .text section hash!");
 
    }
@@ -142,7 +146,7 @@ static notrace int p_ftrace_modify_all_code_ret(struct kretprobe_instance *ri, s
              */
             p_module = p_db.p_module_list_array[p_tmp].p_mod;
 
-            p_print_log(P_LOG_WATCH,
+            p_print_log(P_LOG_ISSUE,
                         "[FTRACE] Updating module's core .text section hash module[%s : 0x%lx]!",
                         p_db.p_module_list_array[p_tmp].p_name,
                         (unsigned long)p_db.p_module_list_array[p_tmp].p_mod);

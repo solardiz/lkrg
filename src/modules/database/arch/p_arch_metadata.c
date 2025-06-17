@@ -141,18 +141,18 @@ int p_unregister_arch_metadata(void) {
    p_uninstall_switch_idt_hook();
 #endif
 
+#if defined(CONFIG_DYNAMIC_FTRACE)
+   p_uninstall_ftrace_modify_all_code_hook();
+#endif
+#if defined(CONFIG_FUNCTION_TRACER)
+   p_uninstall_ftrace_enable_sysctl_hook();
+#endif
    /*
     * This is not an arch specific hook, but it's a good place to deregister it
     */
    p_uninstall_arch_jump_label_transform_hook();
 #ifdef P_LKRG_CI_ARCH_JUMP_LABEL_TRANSFORM_APPLY_H
    p_uninstall_arch_jump_label_transform_apply_hook();
-#endif
-#if defined(CONFIG_DYNAMIC_FTRACE)
-   p_uninstall_ftrace_modify_all_code_hook();
-#endif
-#if defined(CONFIG_FUNCTION_TRACER)
-   p_uninstall_ftrace_enable_sysctl_hook();
 #endif
 #if defined(CONFIG_HAVE_STATIC_CALL)
    p_uninstall_arch_static_call_transform_hook();
