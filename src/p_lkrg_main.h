@@ -330,7 +330,8 @@ extern p_ro_page p_ro;
       goto p_sym_error; \
    }
 
-#ifdef CONFIG_X86_KERNEL_IBT
+//#ifdef CONFIG_X86_KERNEL_IBT
+#if defined(CONFIG_X86_64) || defined(CONFIG_ARM64)
 
 /*
  * When Intel CET IBT is in use, we can't call non-exported kernel functions
@@ -361,11 +362,20 @@ extern p_ro_page p_ro;
  * could improve upon this by having these functions in their own translation
  * unit, ideally coming from an assembly rather than C source file.
  */
+#ifdef CONFIG_X86_64
 #define GENERATE_CALL_FUNC(type, name, ...) \
    notrace __attribute__ ((noipa)) type call_##name(__VA_ARGS__) { \
       __asm__ __volatile__ ("pushq %0" :: "m" (P_SYM(name))); \
    } \
    STACK_FRAME_NON_STANDARD(call_##name);
+#elif defined(CONFIG_ARM64)
+#define GENERATE_CALL_FUNC(type, name, ...) \
+   notrace __attribute__((noipa)) __attribute__((naked)) type call_##name(__VA_ARGS__) { \
+      __asm__ __volatile__ ("ret %0" :: "r" (P_SYM(name))); \
+   }
+#else
+#error "No IBT/BTI support for this architecture"
+#endif
 
 #define GENERATE_CALL_FUNC_PROTO(type, name, ...) \
    extern type call_##name(__VA_ARGS__);
