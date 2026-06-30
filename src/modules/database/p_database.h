@@ -191,6 +191,7 @@ static inline void p_text_section_lock(void) {
    mutex_lock(P_SYM(p_tracepoints_mutex));
 #endif
 #if defined(P_LKRG_CI_ARCH_STATIC_CALL_TRANSFORM_H)
+#if 0
    do {
       p_lkrg_counter_lock_lock(&p_static_call_spinlock);
       if (!p_lkrg_counter_lock_val_read(&p_static_call_spinlock))
@@ -201,6 +202,7 @@ static inline void p_text_section_lock(void) {
    p_lkrg_counter_lock_val_inc(&p_static_call_spinlock);
    p_lkrg_counter_lock_unlock(&p_static_call_spinlock);
 #endif
+#endif
    mutex_lock(P_SYM(p_text_mutex));
 }
 
@@ -208,7 +210,9 @@ static inline void p_text_section_unlock(void) {
 
    mutex_unlock(P_SYM(p_text_mutex));
 #if defined(P_LKRG_CI_ARCH_STATIC_CALL_TRANSFORM_H)
+#if 0
    p_lkrg_counter_lock_val_dec(&p_static_call_spinlock);
+#endif
 #endif
 #ifdef CONFIG_TRACEPOINTS
    mutex_unlock(P_SYM(p_tracepoints_mutex));

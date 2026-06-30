@@ -41,6 +41,7 @@ static int p_arch_static_call_transform_entry(struct kretprobe_instance *p_ri, s
    p_debug_kprobe_log(
           "p_arch_static_call_transform_entry: comm[%s] Pid:%d",current->comm,current->pid);
 
+#if 0
    do {
       p_lkrg_counter_lock_lock(&p_static_call_spinlock);
       if (!p_lkrg_counter_lock_val_read(&p_static_call_spinlock))
@@ -50,6 +51,7 @@ static int p_arch_static_call_transform_entry(struct kretprobe_instance *p_ri, s
    } while(1);
    p_lkrg_counter_lock_val_inc(&p_static_call_spinlock);
    p_lkrg_counter_lock_unlock(&p_static_call_spinlock);
+#endif
 
 
    p_module1_idx = p_module2_idx = p_tracepoint_tmp_text = 0;
@@ -248,7 +250,9 @@ static int p_arch_static_call_transform_ret(struct kretprobe_instance *ri, struc
       }
    }
 
+#if 0
    p_lkrg_counter_lock_val_dec(&p_static_call_spinlock);
+#endif
 
 
    return 0;

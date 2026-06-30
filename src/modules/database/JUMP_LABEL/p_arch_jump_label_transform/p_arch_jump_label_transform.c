@@ -40,6 +40,7 @@ static int p_arch_jump_label_transform_entry(struct kretprobe_instance *p_ri, st
    p_debug_kprobe_log(
           "p_arch_jump_label_transform_entry: comm[%s] Pid:%d",current->comm,current->pid);
 
+#if 0
    do {
       p_lkrg_counter_lock_lock(&p_jl_lock);
       if (!p_lkrg_counter_lock_val_read(&p_jl_lock))
@@ -49,6 +50,7 @@ static int p_arch_jump_label_transform_entry(struct kretprobe_instance *p_ri, st
    } while(1);
    p_lkrg_counter_lock_val_inc(&p_jl_lock);
    p_lkrg_counter_lock_unlock(&p_jl_lock);
+#endif
 
    p_print_log(P_LOG_WATCH,
                "[JUMP_LABEL] New modification: type[%s] code[0x%lx] target[0x%lx] key[0x%lx]!",
@@ -180,7 +182,9 @@ static int p_arch_jump_label_transform_ret(struct kretprobe_instance *ri, struct
 
    p_db.p_jump_label.p_state = P_JUMP_LABEL_NONE;
 
+#if 0
    p_lkrg_counter_lock_val_dec(&p_jl_lock);
+#endif
 
    return 0;
 }
